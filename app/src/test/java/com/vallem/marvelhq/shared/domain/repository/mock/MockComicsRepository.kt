@@ -1,7 +1,9 @@
-package com.vallem.marvelhq.shared.domain.repository
+package com.vallem.marvelhq.shared.domain.repository.mock
 
-import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.domain.model.PageResult
+import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
+import com.vallem.marvelhq.shared.domain.repository.util.generate
+import com.vallem.marvelhq.shared.domain.repository.util.randomComic
 
 class MockComicsRepository : ComicsRepository {
     private val comics = generate(16) { randomComic() }
@@ -14,7 +16,3 @@ class MockComicsRepository : ComicsRepository {
         )
         else PageResult.Failure(Throwable())
 }
-
-private fun randomComic() = Comic("Comic")
-
-private fun <T> generate(count: Int, builder: () -> T) = List(count) { builder() }

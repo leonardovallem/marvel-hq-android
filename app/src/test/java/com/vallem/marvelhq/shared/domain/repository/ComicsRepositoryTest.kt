@@ -2,6 +2,7 @@ package com.vallem.marvelhq.shared.domain.repository
 
 import com.vallem.marvelhq.shared.domain.model.getOrNull
 import com.vallem.marvelhq.shared.domain.model.isSuccess
+import com.vallem.marvelhq.shared.domain.repository.mock.MockComicsRepository
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
