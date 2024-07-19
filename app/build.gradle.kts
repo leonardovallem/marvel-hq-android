@@ -44,8 +44,12 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 
-    testOptions.unitTests{
+    packaging.resources.excludes += listOf("META-INF/**")
+
+    testOptions.unitTests {
         isIncludeAndroidResources = true
+        isReturnDefaultValues = true
+
         all {
             it.useJUnitPlatform()
         }
@@ -69,7 +73,7 @@ dependencies {
     implementation(libs.paging.runtime)
     implementation(libs.paging.compose)
 
-    implementation(libs.room.runtime)
+    implementation(libs.room)
     implementation(libs.room.paging)
     ksp(libs.room.compiler)
 
@@ -83,11 +87,21 @@ dependencies {
 
     testImplementation(libs.junit.api)
     testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.paging.testing)
     testImplementation(libs.kotest.runner)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.robolectric)
-    testImplementation(libs.androidx.junit)
     testImplementation(libs.koin.junit)
+
+    androidTestImplementation(libs.kotest.assertions)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.koin.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.paging.testing)
+    androidTestImplementation(libs.robolectric)
+    androidTestImplementation(libs.androidx.espresso.core)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

@@ -1,16 +1,17 @@
 package com.vallem.marvelhq.shared.domain.repository
 
+import androidx.paging.PagingData
 import com.vallem.marvelhq.shared.domain.exception.ComicNotFavoritedError
 import com.vallem.marvelhq.shared.domain.model.Comic
-import com.vallem.marvelhq.shared.domain.model.PageResult
+import kotlinx.coroutines.flow.Flow
 
 interface FavoriteComicsRepository {
-    fun save(comic: Comic)
-    fun retrieveNextPage(page: Int, size: Int): PageResult<Comic>
+    suspend fun save(comic: Comic)
+    fun retrievePages(pageSize: Int): Flow<PagingData<Comic>>
 
     /**
      * @throws ComicNotFavoritedError
      */
-    fun remove(comic: Comic)
-    fun removeAll()
+    suspend fun remove(comic: Comic)
+    suspend fun removeAll()
 }
