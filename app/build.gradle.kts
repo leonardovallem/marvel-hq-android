@@ -44,8 +44,11 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 
-    testOptions.unitTests.all {
-        it.useJUnitPlatform()
+    testOptions.unitTests{
+        isIncludeAndroidResources = true
+        all {
+            it.useJUnitPlatform()
+        }
     }
 }
 
@@ -76,13 +79,15 @@ dependencies {
     implementation(libs.ktor.json)
     implementation(libs.ktor.auth)
 
-    testImplementation(libs.junit)
+    implementation(libs.koin.compose)
+
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.kotest.runner)
     testImplementation(libs.kotest.assertions)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.koin.junit)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
