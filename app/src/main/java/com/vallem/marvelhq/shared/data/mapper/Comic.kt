@@ -4,9 +4,9 @@ import com.vallem.marvelhq.shared.data.local.entity.ComicEntity
 import com.vallem.marvelhq.shared.domain.model.Comic
 
 fun ComicEntity.toDomain() = run {
-    Comic(id, title)
+    Comic(id, title, thumbUrl)
 }
 
 fun Comic.toEntity() = run {
-    ComicEntity(id, title)
+    ComicEntity(id, title, thumbnailUrl)
 }

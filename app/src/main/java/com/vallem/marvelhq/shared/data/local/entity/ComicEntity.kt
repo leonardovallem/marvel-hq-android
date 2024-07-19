@@ -8,4 +8,5 @@ import androidx.room.PrimaryKey
 data class ComicEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo("title") val title: String,
+    @ColumnInfo("thumb_url") val thumbUrl: String?,
 )
