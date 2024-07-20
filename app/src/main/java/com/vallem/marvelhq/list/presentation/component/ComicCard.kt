@@ -1,11 +1,11 @@
 package com.vallem.marvelhq.list.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,6 +22,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
+import coil.size.Size
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.presentation.component.ShimmeringSkeleton
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
@@ -33,20 +34,19 @@ fun ComicCard(comic: Comic, modifier: Modifier = Modifier) {
     Surface(
         color = Color.Transparent,
         modifier = modifier
-            .widthIn(min = 128.dp)
-            .heightIn(max = 360.dp)
     ) {
-        Column {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(comic.thumbnailUrl)
                     .crossfade(true)
+                    .size(Size.ORIGINAL)
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .weight(1f)
+                    .clip(MaterialTheme.shapes.small)
+                    .fillMaxSize()
             ) {
                 when (painter.state) {
                     is AsyncImagePainter.State.Loading -> ShimmeringSkeleton()
@@ -55,13 +55,13 @@ fun ComicCard(comic: Comic, modifier: Modifier = Modifier) {
                         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                     )
 
-                    else -> SubcomposeAsyncImageContent(contentScale = ContentScale.FillWidth)
+                    else -> SubcomposeAsyncImageContent()
                 }
             }
 
             Text(
                 text = comic.title,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
