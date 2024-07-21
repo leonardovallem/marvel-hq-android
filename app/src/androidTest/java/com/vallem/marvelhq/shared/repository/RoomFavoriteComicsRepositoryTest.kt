@@ -58,4 +58,4 @@ class RoomFavoriteComicsRepositoryTest : KoinTest {
     }
 }
 
-fun randomComic() = Comic(Random.nextInt(), "Comic")
+fun randomComic() = Comic(Random.nextInt(), "Comic", null)
