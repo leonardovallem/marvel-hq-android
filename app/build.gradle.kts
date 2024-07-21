@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,11 +21,21 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties().apply {
+            load(project.rootProject.file("local.properties").inputStream())
+        }
+
+        buildConfigField(
+            type = "String",
+            name = "MARVEL_API_PUBLIC_KEY",
+            value = "\"${properties.getProperty("MARVEL_API_PUBLIC_KEY").orEmpty()}\""
+        )
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -39,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     room {
@@ -83,6 +96,7 @@ dependencies {
     implementation(libs.ktor.content.negotiation)
     implementation(libs.ktor.json)
     implementation(libs.ktor.auth)
+    implementation(libs.ktor.resources)
 
     implementation(libs.koin.compose)
 
