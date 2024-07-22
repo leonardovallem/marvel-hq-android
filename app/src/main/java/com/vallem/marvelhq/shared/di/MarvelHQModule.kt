@@ -10,7 +10,8 @@ import com.vallem.marvelhq.shared.data.repository.RemoteComicsRepository
 import com.vallem.marvelhq.shared.data.util.MarvelApiAuthData
 import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.engine.android.Android
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
@@ -34,7 +35,7 @@ val MarvelHQModule = module {
     factory<FavoriteComicsDao> { get<MarvelHQDatabase>().favoriteComicsDao }
 
     single<HttpClient> {
-        HttpClient(OkHttp) {
+        HttpClient(Android) {
             install(ContentNegotiation) {
                 json(Json {
                     ignoreUnknownKeys = true
@@ -44,6 +45,10 @@ val MarvelHQModule = module {
             install(Logging) {
                 logger = Logger.ANDROID
                 level = LogLevel.ALL
+            }
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = HttpTimeout.INFINITE_TIMEOUT_MS
             }
 
             defaultRequest {

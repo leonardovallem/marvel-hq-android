@@ -14,7 +14,8 @@ class ComicsPagingSource(private val httpClient: HttpClient) : PagingSource<Int,
             val data = httpClient.get(
                 ApiRoutes.comics(
                     limit = params.loadSize,
-                    offset = params.key?.let { it * params.loadSize } ?: 0),
+                    offset = params.key?.let { it * params.loadSize } ?: 0,
+                )
             ).body<ComicsResponseDto>()
 
             LoadResult.Page(

@@ -98,7 +98,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.ktor)
-    implementation(libs.ktor.okhttp)
+    implementation(libs.ktor.android)
     implementation(libs.ktor.content.negotiation)
     implementation(libs.ktor.json)
     implementation(libs.ktor.auth)
