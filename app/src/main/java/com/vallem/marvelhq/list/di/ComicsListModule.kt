@@ -5,5 +5,5 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val ComicsListModule = module {
-    viewModel { ComicsListViewModel() }
+    viewModel { ComicsListViewModel(get()) }
 }

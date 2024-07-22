@@ -31,6 +31,12 @@ android {
             name = "MARVEL_API_PUBLIC_KEY",
             value = "\"${properties.getProperty("MARVEL_API_PUBLIC_KEY").orEmpty()}\""
         )
+
+        buildConfigField(
+            type = "String",
+            name = "MARVEL_API_PRIVATE_KEY",
+            value = "\"${properties.getProperty("MARVEL_API_PRIVATE_KEY").orEmpty()}\""
+        )
     }
 
     buildTypes {
@@ -96,7 +102,7 @@ dependencies {
     implementation(libs.ktor.content.negotiation)
     implementation(libs.ktor.json)
     implementation(libs.ktor.auth)
-    implementation(libs.ktor.resources)
+    implementation(libs.ktor.logging)
 
     implementation(libs.koin.compose)
 

@@ -2,15 +2,20 @@ package com.vallem.marvelhq.list.presentation
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import androidx.paging.cachedIn
 import com.vallem.marvelhq.shared.AppConstants.DefaultPageSize
 import com.vallem.marvelhq.shared.domain.model.Comic
+import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
 import kotlinx.coroutines.delay
 
-class ComicsListViewModel : ViewModel() {
+class ComicsListViewModel(repository: ComicsRepository) : ViewModel() {
+    val comics = repository.retrieveNextPage(DefaultPageSize).cachedIn(viewModelScope)
+
     companion object {
         fun mockComic() = Comic(
             id = 1689,

@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,13 +25,14 @@ import com.vallem.marvelhq.list.presentation.component.ComicCard
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
 @Serializable
 object ComicsListScreen
 
 @Composable
-fun ComicsListScreen() {
-    ComicsListScreenContent(comics = ComicsListViewModel.comics.collectAsLazyPagingItems())
+fun ComicsListScreen(viewModel: ComicsListViewModel = koinViewModel()) {
+    ComicsListScreenContent(comics = viewModel.comics.collectAsLazyPagingItems())
 }
 
 @Composable
@@ -46,12 +48,14 @@ private fun ComicsListScreenContent(comics: LazyPagingItems<Comic>) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                when (comics.loadState.refresh) {
+                when (val a = comics.loadState.refresh) {
                     is LoadState.NotLoading -> items(comics.itemCount) {
                         comics[it]?.let { comic -> ComicCard(comic = comic) }
                     }
 
-                    is LoadState.Error -> TODO()
+                    is LoadState.Error -> item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(text = a.error.message.toString())
+                    }
 
                     LoadState.Loading -> items(LoadingComicsCount) {
                         ComicCard.Skeleton()
