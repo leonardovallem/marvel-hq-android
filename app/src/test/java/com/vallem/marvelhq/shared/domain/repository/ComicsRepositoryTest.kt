@@ -13,7 +13,7 @@ class ComicsRepositoryTest : StringSpec({
     val repository: ComicsRepository = MockComicsRepository()
 
     "should return a page of comics for a valid page number" {
-        val pageResult = repository.retrieveNextPage(page = 0, size = PageSize)
+        val pageResult = repository.loadPage(page = 0, size = PageSize)
         pageResult.isSuccess shouldBe true
 
         pageResult.getOrNull() shouldNotBeNull {
@@ -23,7 +23,7 @@ class ComicsRepositoryTest : StringSpec({
     }
 
     "should return a failure page result for an invalid page number" {
-        val pageResult = repository.retrieveNextPage(page = -1, size = PageSize)
+        val pageResult = repository.loadPage(page = -1, size = PageSize)
 
         pageResult.isSuccess shouldBe false
         pageResult.getOrNull() shouldBe null

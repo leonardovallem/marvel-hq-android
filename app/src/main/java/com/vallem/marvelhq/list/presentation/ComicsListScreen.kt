@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,17 +22,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.vallem.marvelhq.list.presentation.component.ComicCard
 import com.vallem.marvelhq.shared.domain.model.Comic
+import com.vallem.marvelhq.shared.presentation.pagination.PaginationState
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
@@ -40,25 +41,38 @@ object ComicsListScreen
 
 @Composable
 fun ComicsListScreen(viewModel: ComicsListViewModel = koinViewModel()) {
-    ComicsListScreenContent(comics = viewModel.comics.collectAsLazyPagingItems())
+    ComicsListScreenContent(
+        comics = viewModel.comics,
+        appendState = viewModel.appendState,
+        refreshState = viewModel.refreshState,
+        retryPagination = viewModel::retry,
+        loadNextPage = viewModel::loadNextPage,
+    )
 }
 
 @Composable
-private fun ComicsListScreenContent(comics: LazyPagingItems<Comic>) {
+private fun ComicsListScreenContent(
+    comics: SnapshotStateList<Comic>,
+    appendState: PaginationState.Append,
+    refreshState: PaginationState.Refresh,
+    retryPagination: () -> Unit,
+    loadNextPage: () -> Unit,
+) {
     val configuration = LocalConfiguration.current
     val columns = configuration.screenWidthDp / ComicScreenDividerFactor
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val listState = rememberLazyGridState()
 
-    LaunchedEffect(comics.loadState.append) {
-        if (comics.loadState.append is LoadState.Error) {
+    LaunchedEffect(appendState) {
+        if (appendState == PaginationState.Append.Error) {
             val result = snackbarHostState.showSnackbar(
                 message = "Erro ao carregar mais items",
                 actionLabel = "Tentar novamente",
                 duration = SnackbarDuration.Long
             )
 
-            if (result == SnackbarResult.ActionPerformed) comics.retry()
+            if (result == SnackbarResult.ActionPerformed) retryPagination()
         }
     }
 
@@ -67,15 +81,30 @@ private fun ComicsListScreenContent(comics: LazyPagingItems<Comic>) {
     ) { pv ->
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
+            state = listState,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(16.dp),
-            modifier = Modifier.padding(pv)
+            modifier = Modifier
+                .padding(pv)
+                .fillMaxSize()
         ) {
-            when (val a = comics.loadState.refresh) {
-                is LoadState.NotLoading -> {
-                    if (comics.itemCount > 0) items(comics.itemCount) {
-                        comics[it]?.let { comic -> ComicCard(comic = comic) }
+            when (refreshState) {
+                PaginationState.Refresh.NotLoading -> {
+                    if (comics.size > 0) {
+                        items(
+                            items = comics,
+                            key = { it.id },
+                            contentType = { "COMIC" }
+                        ) {
+                            ComicCard(comic = it)
+                        }
+
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            LaunchedEffect(Unit) {
+                                loadNextPage()
+                            }
+                        }
                     } else item(span = { GridItemSpan(maxLineSpan) }) {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -91,16 +120,19 @@ private fun ComicsListScreenContent(comics: LazyPagingItems<Comic>) {
                     }
                 }
 
-                is LoadState.Error -> item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(text = a.error.message.toString())
+                PaginationState.Refresh.Error -> item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text(text = "Erro")
                 }
 
-                LoadState.Loading -> items(LoadingComicsCount) {
+                PaginationState.Refresh.Loading -> items(
+                    count = LoadingComicsCount,
+                    contentType = { "COMIC_SKELETON" },
+                ) {
                     ComicCard.Skeleton()
                 }
             }
 
-            if (comics.loadState.append == LoadState.Loading) item(
+            if (appendState == PaginationState.Append.Loading) item(
                 key = "LOADING_INDICATOR",
                 span = { GridItemSpan(maxLineSpan) },
             ) {
@@ -122,6 +154,12 @@ private const val LoadingComicsCount = 20
 @Composable
 private fun ComicsListScreenPreview() {
     MarvelHQTheme {
-        ComicsListScreenContent(ComicsListViewModel.comics.collectAsLazyPagingItems())
+        ComicsListScreenContent(
+            ComicsListViewModel.comics,
+            appendState = PaginationState.Append.NotLoading,
+            refreshState = PaginationState.Refresh.NotLoading,
+            retryPagination = {},
+            loadNextPage = {},
+        )
     }
 }

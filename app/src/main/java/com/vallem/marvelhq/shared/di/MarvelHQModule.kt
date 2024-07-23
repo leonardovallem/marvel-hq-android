@@ -5,7 +5,6 @@ import com.vallem.marvelhq.list.di.ComicsListModule
 import com.vallem.marvelhq.shared.data.local.FavoriteComicsDao
 import com.vallem.marvelhq.shared.data.local.MarvelHQDatabase
 import com.vallem.marvelhq.shared.data.remote.ApiRoutes
-import com.vallem.marvelhq.shared.data.remote.ComicsPagingSource
 import com.vallem.marvelhq.shared.data.repository.RemoteComicsRepository
 import com.vallem.marvelhq.shared.data.util.MarvelApiAuthData
 import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
@@ -65,8 +64,6 @@ val MarvelHQModule = module {
             }
         }
     }
-
-    factory { ComicsPagingSource(get()) }
 
     factory<ComicsRepository> { RemoteComicsRepository(get()) }
 }

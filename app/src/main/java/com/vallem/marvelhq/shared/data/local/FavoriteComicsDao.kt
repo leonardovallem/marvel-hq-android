@@ -1,6 +1,5 @@
 package com.vallem.marvelhq.shared.data.local
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
@@ -13,7 +12,7 @@ interface FavoriteComicsDao {
     suspend fun save(comic: ComicEntity)
 
     @Query("select * from comicentity")
-    fun retrieveAll(): PagingSource<Int, ComicEntity>
+    fun retrieveAll(): List<ComicEntity>
 
     @Query("select * from comicentity where id = :id")
     fun find(id: Int): ComicEntity?

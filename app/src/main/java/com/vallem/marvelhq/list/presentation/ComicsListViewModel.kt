@@ -1,20 +1,35 @@
 package com.vallem.marvelhq.list.presentation
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import androidx.paging.cachedIn
 import com.vallem.marvelhq.shared.AppConstants.DefaultPageSize
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
-import kotlinx.coroutines.delay
+import com.vallem.marvelhq.shared.presentation.pagination.PaginatedViewModel
+import com.vallem.marvelhq.shared.presentation.pagination.PaginationResult
 
-class ComicsListViewModel(repository: ComicsRepository) : ViewModel() {
-    val comics = repository.retrieveNextPage(DefaultPageSize).cachedIn(viewModelScope)
+class ComicsListViewModel(
+    private val repository: ComicsRepository,
+) : PaginatedViewModel(initialPage = InitialPage) {
+    val comics = mutableStateListOf<Comic>()
+
+    init {
+        loadNextPage()
+    }
+
+    override suspend fun retrieveData(): Boolean {
+        val result = repository.loadPage(currentPage, DefaultPageSize, InitialPage)
+        if (result.isRefresh) comics.clear()
+
+        return when (result) {
+            is PaginationResult.Success -> {
+                comics.addAll(result.data)
+                true
+            }
+
+            is PaginationResult.Failure -> false
+        }
+    }
 
     companion object {
         fun mockComic() = Comic(
@@ -23,27 +38,8 @@ class ComicsListViewModel(repository: ComicsRepository) : ViewModel() {
             thumbnailUrl = "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg"
         )
 
-        val comics = Pager(
-            config = PagingConfig(DefaultPageSize, initialLoadSize = DefaultPageSize),
-            pagingSourceFactory = {
-                MockPagingSource(
-                    List(100) { mockComic() }.toMutableStateList(),
-                    DefaultPageSize
-                )
-            }
-        ).flow
-    }
-}
+        val comics = List(10) { mockComic() }.toMutableStateList()
 
-private class MockPagingSource(
-    private val comics: List<Comic>,
-    private val pageSize: Int,
-) : PagingSource<Int, Comic>() {
-    override val keyReuseSupported = true
-
-    override fun getRefreshKey(state: PagingState<Int, Comic>) = null
-    override suspend fun load(params: LoadParams<Int>): LoadResult.Page<Int, Comic> = run {
-        delay(5_000)
-        LoadResult.Page(comics.take(pageSize), null, null)
+        private const val InitialPage = 1
     }
 }

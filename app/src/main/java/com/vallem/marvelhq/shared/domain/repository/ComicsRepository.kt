@@ -1,9 +1,8 @@
 package com.vallem.marvelhq.shared.domain.repository
 
-import androidx.paging.PagingData
 import com.vallem.marvelhq.shared.domain.model.Comic
-import kotlinx.coroutines.flow.Flow
+import com.vallem.marvelhq.shared.presentation.pagination.PaginationResult
 
 interface ComicsRepository {
-    fun retrieveNextPage(pageSize: Int): Flow<PagingData<Comic>>
+    suspend fun loadPage(page: Int, pageSize: Int, initialPage: Int): PaginationResult<Comic>
 }

@@ -90,11 +90,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
 
-    implementation(libs.paging.runtime)
-    implementation(libs.paging.compose)
-
     implementation(libs.room)
-    implementation(libs.room.paging)
     ksp(libs.room.compiler)
 
     implementation(libs.ktor)
@@ -109,7 +105,6 @@ dependencies {
     testImplementation(libs.junit.api)
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.paging.testing)
     testImplementation(libs.kotest.runner)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.koin.junit)
@@ -120,7 +115,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.koin.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.paging.testing)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.espresso.device)
 

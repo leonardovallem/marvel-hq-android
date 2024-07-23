@@ -9,7 +9,6 @@ activityCompose = "1.9.0"
 composeBom = "2024.06.00"
 room = "2.6.1"
 kotest = "5.9.1"
-paging = "3.3.0"
 coil = "2.7.0"
 ktor = "2.3.12"
 koin = "3.5.6"
@@ -38,13 +37,8 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "paging" }
-
 room = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 
 ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
