@@ -55,10 +55,16 @@ object ComicCard {
                         .fillMaxSize()
                 ) {
                     when (painter.state) {
-                        is AsyncImagePainter.State.Loading -> ShimmeringSkeleton()
+                        is AsyncImagePainter.State.Loading -> ShimmeringSkeleton(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .aspectRatio(2 / 3f)
+                        )
 
                         is AsyncImagePainter.State.Error -> Box(
-                            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .fillMaxSize()
                         )
 
                         else -> SubcomposeAsyncImageContent()
