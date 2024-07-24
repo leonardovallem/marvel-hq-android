@@ -1,5 +1,10 @@
 package com.vallem.marvelhq.list.presentation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,6 +33,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.vallem.marvelhq.list.presentation.component.ComicCard
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.presentation.component.PageLoadingIndicator
@@ -39,17 +45,27 @@ import org.koin.androidx.compose.koinViewModel
 @Serializable
 object ComicsListScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ComicsListScreen(viewModel: ComicsListViewModel = koinViewModel()) {
+fun ComicsListScreen(
+    navController: NavHostController,
+    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope,
+    viewModel: ComicsListViewModel = koinViewModel(),
+) {
     ComicsListScreenContent(
         comics = viewModel.comics,
         appendState = viewModel.appendState,
         refreshState = viewModel.refreshState,
         retryPagination = viewModel::retry,
         loadNextPage = viewModel::loadNextPage,
+        onComicClick = { navController.navigate(it) },
+        animatedContentScope = animatedContentScope,
+        sharedTransitionScope = sharedTransitionScope,
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ComicsListScreenContent(
     comics: SnapshotStateList<Comic>,
@@ -57,6 +73,9 @@ private fun ComicsListScreenContent(
     refreshState: PaginationState.Refresh,
     retryPagination: () -> Unit,
     loadNextPage: () -> Unit,
+    onComicClick: (Comic) -> Unit,
+    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope,
 ) {
     val configuration = LocalConfiguration.current
     val columns = configuration.screenWidthDp / ComicScreenDividerFactor
@@ -96,7 +115,12 @@ private fun ComicsListScreenContent(
                             items = comics,
                             contentType = { "COMIC" }
                         ) {
-                            ComicCard(comic = it)
+                            ComicCard(
+                                comic = it,
+                                onClick = { onComicClick(it) },
+                                animatedContentScope = animatedContentScope,
+                                sharedTransitionScope = sharedTransitionScope,
+                            )
                         }
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -148,16 +172,24 @@ private fun ComicsListScreenContent(
 private const val ComicScreenDividerFactor = 180
 private const val LoadingComicsCount = 20
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun ComicsListScreenPreview() {
     MarvelHQTheme {
-        ComicsListScreenContent(
-            ComicsListViewModel.comics,
-            appendState = PaginationState.Append.NotLoading,
-            refreshState = PaginationState.Refresh.NotLoading,
-            retryPagination = {},
-            loadNextPage = {},
-        )
+        SharedTransitionLayout {
+            AnimatedContent(true) {
+                if (it) ComicsListScreenContent(
+                    ComicsListViewModel.comics,
+                    appendState = PaginationState.Append.NotLoading,
+                    refreshState = PaginationState.Refresh.NotLoading,
+                    retryPagination = {},
+                    loadNextPage = {},
+                    onComicClick = {},
+                    animatedContentScope = this,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                )
+            }
+        }
     }
 }

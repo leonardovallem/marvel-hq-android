@@ -1,5 +1,10 @@
 package com.vallem.marvelhq.list.presentation.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,12 +38,20 @@ import com.vallem.marvelhq.shared.presentation.component.shimmeringBrush
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 
 object ComicCard {
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Composable
-    operator fun invoke(comic: Comic, modifier: Modifier = Modifier) {
+    operator fun invoke(
+        comic: Comic,
+        onClick: () -> Unit,
+        animatedContentScope: AnimatedContentScope,
+        sharedTransitionScope: SharedTransitionScope,
+        modifier: Modifier = Modifier,
+    ) {
         val context = LocalContext.current
 
         Surface(
             color = Color.Transparent,
+            onClick = onClick,
             modifier = modifier
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -53,6 +66,14 @@ object ComicCard {
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)
                         .fillMaxSize()
+                        .run {
+                            sharedTransitionScope.run {
+                                sharedElement(
+                                    state = rememberSharedContentState(ThumbnailElementKey + comic.id),
+                                    animatedVisibilityScope = animatedContentScope,
+                                )
+                            }
+                        }
                 ) {
                     when (painter.state) {
                         is AsyncImagePainter.State.Loading -> ShimmeringSkeleton(
@@ -74,7 +95,13 @@ object ComicCard {
                 Text(
                     text = comic.title,
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = sharedTransitionScope.run {
+                        Modifier.sharedElement(
+                            state = rememberSharedContentState(TitleElementKey + comic.id),
+                            animatedVisibilityScope = animatedContentScope,
+                        )
+                    }
                 )
             }
         }
@@ -101,8 +128,12 @@ object ComicCard {
             }
         }
     }
+
+    const val ThumbnailElementKey = "COMIC_CARD_THUMBNAIL"
+    const val TitleElementKey = "COMIC_CARD_TITLE"
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun ComicCardPreview() {
@@ -112,7 +143,16 @@ private fun ComicCardPreview() {
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(24.dp)
         ) {
-            ComicCard(comic = remember { Comic(0, "Comic title", null) })
+            SharedTransitionLayout {
+                AnimatedContent(true) {
+                    if (it) ComicCard(
+                        comic = remember { Comic(0, "Comic title", null) },
+                        onClick = {},
+                        animatedContentScope = this@AnimatedContent,
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                    )
+                }
+            }
         }
     }
 }
