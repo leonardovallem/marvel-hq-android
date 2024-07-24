@@ -16,11 +16,17 @@ import androidx.compose.ui.graphics.Color
 // https://medium.com/@m.derakhshan/how-to-implement-the-shimmer-effect-using-jetpack-compose-fc0e81e47747
 
 @Composable
-fun shimmeringBrush(visible: Boolean = true, targetValue: Float = 1000f): Brush =
+fun shimmeringBrush(
+    visible: Boolean = true,
+    targetValue: Float = 1000f,
+    duration: Int = 750,
+): Brush =
     if (visible) {
         val shimmerColors = listOf(
             Color.LightGray.copy(alpha = 0.6f),
+            Color.LightGray.copy(alpha = 0.4f),
             Color.LightGray.copy(alpha = 0.2f),
+            Color.LightGray.copy(alpha = 0.4f),
             Color.LightGray.copy(alpha = 0.6f),
         )
 
@@ -29,7 +35,8 @@ fun shimmeringBrush(visible: Boolean = true, targetValue: Float = 1000f): Brush 
             initialValue = 0f,
             targetValue = targetValue,
             animationSpec = infiniteRepeatable(
-                animation = tween(800), repeatMode = RepeatMode.Reverse
+                animation = tween(duration),
+                repeatMode = RepeatMode.Reverse
             ),
             label = "ShimmerTranslation"
         )

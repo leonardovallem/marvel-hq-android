@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -31,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vallem.marvelhq.list.presentation.component.ComicCard
 import com.vallem.marvelhq.shared.domain.model.Comic
+import com.vallem.marvelhq.shared.presentation.component.PageLoadingIndicator
 import com.vallem.marvelhq.shared.presentation.pagination.PaginationState
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 import kotlinx.serialization.Serializable
@@ -135,12 +135,11 @@ private fun ComicsListScreenContent(
                 key = "LOADING_INDICATOR",
                 span = { GridItemSpan(maxLineSpan) },
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                }
+                PageLoadingIndicator(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                )
             }
         }
     }
