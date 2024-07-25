@@ -4,22 +4,22 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.vallem.marvelhq.shared.data.local.entity.ComicEntity
+import com.vallem.marvelhq.shared.data.local.entity.FavoriteComicEntity
 
 @Dao
 interface FavoriteComicsDao {
     @Upsert
-    suspend fun save(comic: ComicEntity)
+    suspend fun save(comic: FavoriteComicEntity)
 
-    @Query("select * from comicentity")
-    fun retrieveAll(): List<ComicEntity>
+    @Query("select * from favoritecomicentity")
+    fun retrieveAll(): List<FavoriteComicEntity>
 
-    @Query("select * from comicentity where id = :id")
-    fun find(id: Int): ComicEntity?
+    @Query("select * from favoritecomicentity where id = :id")
+    fun find(id: Int): FavoriteComicEntity?
 
     @Delete
-    suspend fun remove(comic: ComicEntity)
+    suspend fun remove(comic: FavoriteComicEntity)
 
-    @Query("delete from comicentity")
+    @Query("delete from favoritecomicentity")
     suspend fun removeAll()
 }

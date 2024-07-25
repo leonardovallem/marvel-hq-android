@@ -4,13 +4,13 @@ import com.vallem.marvelhq.shared.domain.exception.ComicNotFavoritedError
 import com.vallem.marvelhq.shared.domain.model.Comic
 
 interface FavoriteComicsRepository {
-    suspend fun save(comic: Comic)
-    suspend fun retrieve(id: Int): Comic?
-    fun retrievePages(pageSize: Int): List<Comic>
+    suspend fun save(comic: Comic): Result<Unit>
+    suspend fun retrieve(id: Int): Result<Comic?>
+    suspend fun retrievePages(pageSize: Int): Result<List<Comic>>
 
     /**
      * @throws ComicNotFavoritedError
      */
-    suspend fun remove(comic: Comic)
-    suspend fun removeAll()
+    suspend fun remove(comic: Comic): Result<Unit>
+    suspend fun removeAll(): Result<Unit>
 }

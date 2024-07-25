@@ -5,10 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class ComicEntity(
+data class FavoriteComicEntity(
     @PrimaryKey val id: Int,
     @ColumnInfo("title") val title: String,
     @ColumnInfo("description") val description: String?,
     @ColumnInfo("thumb_url") val thumbUrl: String?,
-    @ColumnInfo("is_favorite") val isFavorite: Boolean,
 )

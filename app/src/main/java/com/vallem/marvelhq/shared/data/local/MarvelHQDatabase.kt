@@ -2,9 +2,9 @@ package com.vallem.marvelhq.shared.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.vallem.marvelhq.shared.data.local.entity.ComicEntity
+import com.vallem.marvelhq.shared.data.local.entity.FavoriteComicEntity
 
-@Database(entities = [ComicEntity::class], version = 1)
+@Database(entities = [FavoriteComicEntity::class], version = 2)
 abstract class MarvelHQDatabase : RoomDatabase() {
     abstract val favoriteComicsDao: FavoriteComicsDao
 }

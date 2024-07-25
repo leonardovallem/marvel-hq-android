@@ -6,6 +6,9 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -33,11 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.vallem.marvelhq.details.presentation.model.FavState
 import com.vallem.marvelhq.list.presentation.component.ComicCard.ThumbnailElementKey
 import com.vallem.marvelhq.list.presentation.component.ComicCard.TitleElementKey
 import com.vallem.marvelhq.list.presentation.component.ComicThumbnail
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -47,11 +54,10 @@ fun ComicDetailsScreen(
     navController: NavHostController,
     animatedContentScope: AnimatedContentScope,
     sharedTransitionScope: SharedTransitionScope,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ComicDetailsViewModel = koinViewModel { parametersOf(comic) }
 ) {
-    Scaffold(
-        modifier = modifier
-    ) { _ ->
+    Scaffold(modifier = modifier) { _ ->
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,7 +86,7 @@ fun ComicDetailsScreen(
                 }
 
                 ComicThumbnail(
-                    url = comic.thumbnailUrl,
+                    url = viewModel.comic.thumbnailUrl,
                     contentScale = ContentScale.Inside,
                     modifier = Modifier
                         .fillMaxWidth(.75f)
@@ -95,23 +101,34 @@ fun ComicDetailsScreen(
                 )
 
                 FilledIconButton(
-                    onClick = {},
+                    onClick = viewModel::toggleFavorite,
+                    enabled = viewModel.favState != FavState.Loading,
                     shape = MaterialTheme.shapes.extraLarge,
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
+                        contentColor = MaterialTheme.colorScheme.error
                     ),
                 ) {
-                    AnimatedContent(targetState = comic.isFavorite) {
-                        if (it) Icon(
-                            imageVector = Icons.Rounded.FavoriteBorder,
-                            contentDescription = "Favoritar",
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                        else Icon(
-                            imageVector = Icons.Rounded.Favorite,
-                            contentDescription = "Desfavoritar",
-                            tint = MaterialTheme.colorScheme.surfaceVariant
-                        )
+                    AnimatedContent(
+                        targetState = viewModel.favState,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                    ) {
+                        when (it) {
+                            FavState.Loading -> CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.error,
+                                strokeWidth = 2.dp
+                            )
+
+                            FavState.Favorited -> Icon(
+                                imageVector = Icons.Rounded.Favorite,
+                                contentDescription = "Desfavoritar",
+                            )
+
+                            FavState.NotFavorited -> Icon(
+                                imageVector = Icons.Rounded.FavoriteBorder,
+                                contentDescription = "Favoritar",
+                            )
+                        }
                     }
                 }
             }
@@ -177,7 +194,6 @@ private fun ComicDetailsScreenPreview() {
                             "Marvel comic",
                             "Definitely a Marvel comic",
                             "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg",
-                            true
                         )
                     },
                     animatedContentScope = this,

@@ -38,7 +38,6 @@ class ComicsListViewModel(
             title = "Official Handbook of the Marvel Universe (2004) #10 (MARVEL KNIGHTS)",
             description = "Official Handbook of the Marvel Universe",
             thumbnailUrl = "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg",
-            isFavorite = true,
         )
 
         val comics = List(10) { mockComic() }.toMutableStateList()
