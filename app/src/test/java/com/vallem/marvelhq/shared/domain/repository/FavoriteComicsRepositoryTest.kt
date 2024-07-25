@@ -43,7 +43,7 @@ class FavoriteComicsRepositoryTest : StringSpec({
     }
 
     "should return a page of comics" {
-        val page = repository.retrievePages(15).asSnapshot()
+        val page = repository.loadPage(15).asSnapshot()
         page.size shouldBe PageSize
     }
 })

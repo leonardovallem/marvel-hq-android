@@ -7,6 +7,7 @@ import com.vallem.marvelhq.shared.data.mapper.toFavoriteComicEntity
 import com.vallem.marvelhq.shared.domain.exception.ComicNotFavoritedError
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.domain.repository.FavoriteComicsRepository
+import com.vallem.marvelhq.shared.presentation.pagination.PaginationResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -23,13 +24,17 @@ class RoomFavoriteComicsRepository(private val dao: FavoriteComicsDao) : Favorit
         }
     }
 
-    override suspend fun retrievePages(pageSize: Int) = withContext(Dispatchers.IO) {
-        runCatching {
-            dao
-                .retrieveAll()
-                .map(FavoriteComicEntity::toDomain)
+    override suspend fun loadPage(page: Int, size: Int, initialPage: Int) =
+        withContext(Dispatchers.IO) {
+            try {
+                dao
+                    .retrieveAll(page, size)
+                    .map(FavoriteComicEntity::toDomain)
+                    .let { PaginationResult.Success(it, page == initialPage) }
+            } catch (t: Throwable) {
+                PaginationResult.Failure(t, page == initialPage)
+            }
         }
-    }
 
     override suspend fun remove(comic: Comic) = withContext(Dispatchers.IO) {
         runCatching {

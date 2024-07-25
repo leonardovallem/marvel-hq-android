@@ -1,15 +1,15 @@
-package com.vallem.marvelhq.list.presentation
+package com.vallem.marvelhq.favorites.presentation
 
 import androidx.compose.runtime.mutableStateListOf
 import com.vallem.marvelhq.shared.AppConstants.DefaultPageSize
 import com.vallem.marvelhq.shared.domain.model.Comic
-import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
+import com.vallem.marvelhq.shared.domain.repository.FavoriteComicsRepository
 import com.vallem.marvelhq.shared.presentation.pagination.PaginatedViewModel
 import com.vallem.marvelhq.shared.presentation.pagination.PaginationResult
 
-class ComicsListViewModel(
-    private val repository: ComicsRepository,
-) : PaginatedViewModel(initialPage = InitialPage) {
+class FavoriteComicsViewModel(
+    private val repository: FavoriteComicsRepository,
+) : PaginatedViewModel(InitialPage) {
     val comics = mutableStateListOf<Comic>()
 
     init {
