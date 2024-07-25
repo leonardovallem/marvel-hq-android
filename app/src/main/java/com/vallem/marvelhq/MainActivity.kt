@@ -39,7 +39,9 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
+        setTransparentWindowBackground()
 
         setContent {
             val navController = rememberNavController()
@@ -151,6 +153,12 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun setTransparentWindowBackground() {
+        window.decorView.post {
+            window.setBackgroundDrawableResource(android.R.color.transparent)
         }
     }
 }

@@ -98,7 +98,9 @@ fun ComicsListScreenContent(
                             )
                         }
 
-                        item(span = { GridItemSpan(maxLineSpan) }) {
+                        if (appendState != PaginationState.Append.EndReached) item(
+                            span = { GridItemSpan(maxLineSpan) },
+                        ) {
                             LaunchedEffect(Unit) {
                                 loadNextPage()
                             }

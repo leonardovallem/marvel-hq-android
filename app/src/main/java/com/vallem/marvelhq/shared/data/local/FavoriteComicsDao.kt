@@ -11,8 +11,8 @@ interface FavoriteComicsDao {
     @Upsert
     suspend fun save(comic: FavoriteComicEntity)
 
-    @Query("select * from favoritecomicentity limit :size offset :page")
-    fun retrieveAll(page: Int, size: Int): List<FavoriteComicEntity>
+    @Query("select * from favoritecomicentity limit :size offset :offset")
+    fun retrieveAll(size: Int, offset: Int): List<FavoriteComicEntity>
 
     @Query("select * from favoritecomicentity where id = :id")
     fun find(id: Int): FavoriteComicEntity?

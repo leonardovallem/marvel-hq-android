@@ -7,6 +7,7 @@ import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
 import com.vallem.marvelhq.shared.domain.repository.FavoriteComicsRepository
 import com.vallem.marvelhq.shared.presentation.pagination.PaginatedViewModel
 import com.vallem.marvelhq.shared.presentation.pagination.PaginationResult
+import com.vallem.marvelhq.shared.presentation.pagination.PaginationState
 
 class ComicsListViewModel(
     private val repository: ComicsRepository,
@@ -17,12 +18,13 @@ class ComicsListViewModel(
         loadNextPage()
     }
 
-    override suspend fun retrieveData(): Boolean {
-        val result = repository.loadPage(currentPage, DefaultPageSize, InitialPage)
+    override suspend fun retrieveData(page: Int): Boolean {
+        val result = repository.loadPage(page, DefaultPageSize, InitialPage)
         if (result.isRefresh) comics.clear()
 
         return when (result) {
             is PaginationResult.Success -> {
+                if (result.data.size < DefaultPageSize) appendState = PaginationState.Append.EndReached
                 val unique = result.data.filter { it !in comics }
                 comics.addAll(unique)
                 true
@@ -42,12 +44,13 @@ class FavoriteComicsViewModel(
         loadNextPage()
     }
 
-    override suspend fun retrieveData(): Boolean {
-        val result = repository.loadPage(currentPage, DefaultPageSize, InitialPage)
+    override suspend fun retrieveData(page: Int): Boolean {
+        val result = repository.loadPage(page, DefaultPageSize, InitialPage)
         if (result.isRefresh) comics.clear()
 
         return when (result) {
             is PaginationResult.Success -> {
+                if (result.data.size < DefaultPageSize) appendState = PaginationState.Append.EndReached
                 val unique = result.data.filter { it !in comics }
                 comics.addAll(unique)
                 true

@@ -28,7 +28,7 @@ class RoomFavoriteComicsRepository(private val dao: FavoriteComicsDao) : Favorit
         withContext(Dispatchers.IO) {
             try {
                 dao
-                    .retrieveAll(page, size)
+                    .retrieveAll(size, (page - initialPage) * size)
                     .map(FavoriteComicEntity::toDomain)
                     .let { PaginationResult.Success(it, page == initialPage) }
             } catch (t: Throwable) {
