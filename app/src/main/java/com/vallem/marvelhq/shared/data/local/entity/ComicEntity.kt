@@ -10,4 +10,5 @@ data class ComicEntity(
     @ColumnInfo("title") val title: String,
     @ColumnInfo("description") val description: String?,
     @ColumnInfo("thumb_url") val thumbUrl: String?,
+    @ColumnInfo("is_favorite") val isFavorite: Boolean,
 )

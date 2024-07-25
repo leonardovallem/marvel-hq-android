@@ -10,6 +10,7 @@ import com.vallem.marvelhq.shared.domain.repository.FavoriteComicsRepository
 
 class RoomFavoriteComicsRepository(private val dao: FavoriteComicsDao) : FavoriteComicsRepository {
     override suspend fun save(comic: Comic) = dao.save(comic.toEntity())
+    override suspend fun retrieve(id: Int) = dao.find(id)?.let(ComicEntity::toDomain)
 
     override fun retrievePages(pageSize: Int) = dao
         .retrieveAll()

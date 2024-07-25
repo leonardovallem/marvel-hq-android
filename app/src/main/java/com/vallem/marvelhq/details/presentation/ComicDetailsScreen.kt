@@ -1,5 +1,6 @@
 package com.vallem.marvelhq.details.presentation
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -7,14 +8,16 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -36,6 +39,7 @@ import com.vallem.marvelhq.list.presentation.component.ComicThumbnail
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ComicDetailsScreen(
@@ -56,7 +60,9 @@ fun ComicDetailsScreen(
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            Box(
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 FilledIconButton(
@@ -66,7 +72,6 @@ fun ComicDetailsScreen(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
                         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     ),
-                    modifier = Modifier.align(Alignment.TopStart)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -78,7 +83,6 @@ fun ComicDetailsScreen(
                     url = comic.thumbnailUrl,
                     contentScale = ContentScale.Inside,
                     modifier = Modifier
-                        .align(Alignment.Center)
                         .fillMaxWidth(.75f)
                         .run {
                             sharedTransitionScope.run {
@@ -89,6 +93,27 @@ fun ComicDetailsScreen(
                             }
                         }
                 )
+
+                FilledIconButton(
+                    onClick = {},
+                    shape = MaterialTheme.shapes.extraLarge,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
+                    ),
+                ) {
+                    AnimatedContent(targetState = comic.isFavorite) {
+                        if (it) Icon(
+                            imageVector = Icons.Rounded.FavoriteBorder,
+                            contentDescription = "Favoritar",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                        else Icon(
+                            imageVector = Icons.Rounded.Favorite,
+                            contentDescription = "Desfavoritar",
+                            tint = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    }
+                }
             }
 
             Text(
@@ -152,6 +177,7 @@ private fun ComicDetailsScreenPreview() {
                             "Marvel comic",
                             "Definitely a Marvel comic",
                             "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg",
+                            true
                         )
                     },
                     animatedContentScope = this,

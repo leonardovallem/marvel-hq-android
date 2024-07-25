@@ -5,6 +5,7 @@ import com.vallem.marvelhq.shared.domain.model.Comic
 
 interface FavoriteComicsRepository {
     suspend fun save(comic: Comic)
+    suspend fun retrieve(id: Int): Comic?
     fun retrievePages(pageSize: Int): List<Comic>
 
     /**

@@ -114,7 +114,7 @@ private fun ComicCardPreview() {
             SharedTransitionLayout {
                 AnimatedContent(true) {
                     if (it) ComicCard(
-                        comic = remember { Comic(0, "Comic title", null, null) },
+                        comic = remember { Comic(0, "Comic title", null, null, true) },
                         onClick = {},
                         animatedContentScope = this@AnimatedContent,
                         sharedTransitionScope = this@SharedTransitionLayout,

@@ -6,8 +6,10 @@ import com.vallem.marvelhq.shared.data.local.FavoriteComicsDao
 import com.vallem.marvelhq.shared.data.local.MarvelHQDatabase
 import com.vallem.marvelhq.shared.data.remote.ApiRoutes
 import com.vallem.marvelhq.shared.data.repository.RemoteComicsRepository
+import com.vallem.marvelhq.shared.data.repository.RoomFavoriteComicsRepository
 import com.vallem.marvelhq.shared.data.util.MarvelApiAuthData
 import com.vallem.marvelhq.shared.domain.repository.ComicsRepository
+import com.vallem.marvelhq.shared.domain.repository.FavoriteComicsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpTimeout
@@ -65,5 +67,6 @@ val MarvelHQModule = module {
         }
     }
 
-    factory<ComicsRepository> { RemoteComicsRepository(get()) }
+    factory<ComicsRepository> { RemoteComicsRepository(get(), get()) }
+    factory<FavoriteComicsRepository> { RoomFavoriteComicsRepository(get()) }
 }
