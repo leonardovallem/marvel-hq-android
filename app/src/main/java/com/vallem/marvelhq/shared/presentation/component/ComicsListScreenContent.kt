@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vallem.marvelhq.list.presentation.component.ComicCard
+import com.vallem.marvelhq.list.presentation.component.ComicsListFilters
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.presentation.pagination.PaginationState
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
@@ -81,15 +82,39 @@ fun ComicsListScreenContent(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(16.dp),
-            modifier = Modifier.semantics {
-                testTag = "comicsGrid"
-                set(ItemsPerRowSemanticProperty, columns.toString())
-            }
+            modifier = Modifier
+                .semantics {
+                    testTag = "comicsGrid"
+                    set(ItemsPerRowSemanticProperty, columns.toString())
+                }
                 .padding(pv)
                 .fillMaxSize()
         ) {
+            item(
+                span = { GridItemSpan(maxLineSpan) },
+                contentType = { "TITLE" },
+            ) {
+                Text(
+                    text = "HQs",
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
             when (refreshState) {
                 PaginationState.Refresh.NotLoading -> {
+                    item(
+                        span = { GridItemSpan(maxLineSpan) },
+                        contentType = { "FILTERS" },
+                    ) {
+                        ComicsListFilters(
+                            filters = com.vallem.marvelhq.list.presentation.model.ComicsListFilters(),
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
+                    }
+
                     if (comics.size > 0) {
                         items(
                             items = comics,
@@ -130,11 +155,17 @@ fun ComicsListScreenContent(
                     Text(text = "Erro")
                 }
 
-                PaginationState.Refresh.Loading -> items(
-                    count = LoadingComicsCount,
-                    contentType = { "COMIC_SKELETON" },
-                ) {
-                    ComicCard.Skeleton()
+                PaginationState.Refresh.Loading -> {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        ComicsListFilters.Skeleton()
+                    }
+
+                    items(
+                        count = LoadingComicsCount,
+                        contentType = { "COMIC_SKELETON" },
+                    ) {
+                        ComicCard.Skeleton()
+                    }
                 }
             }
 

@@ -31,7 +31,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version = "2.8.0-beta05" }
-material-icons-extended = {module = "androidx.compose.material:material-icons-extended"}
+material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version = "1.8.1" }
 
