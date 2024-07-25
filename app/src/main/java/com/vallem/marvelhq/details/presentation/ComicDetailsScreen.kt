@@ -6,79 +6,89 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import coil.request.ImageRequest
-import coil.size.Size
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.vallem.marvelhq.list.presentation.component.ComicCard.ThumbnailElementKey
 import com.vallem.marvelhq.list.presentation.component.ComicCard.TitleElementKey
+import com.vallem.marvelhq.list.presentation.component.ComicThumbnail
 import com.vallem.marvelhq.shared.domain.model.Comic
-import com.vallem.marvelhq.shared.presentation.component.ShimmeringSkeleton
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ComicDetailsScreen(
     comic: Comic,
+    navController: NavHostController,
     animatedContentScope: AnimatedContentScope,
     sharedTransitionScope: SharedTransitionScope,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
-    Scaffold(modifier = modifier) { pv ->
-        Column(modifier = Modifier.padding(pv)) {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(comic.thumbnailUrl)
-                    .crossfade(true)
-                    .size(Size.ORIGINAL)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
-                    .fillMaxSize()
-                    .run {
-                        sharedTransitionScope.run {
-                            sharedElement(
-                                state = rememberSharedContentState(ThumbnailElementKey + comic.id),
-                                animatedVisibilityScope = animatedContentScope,
-                            )
-                        }
-                    }
+    Scaffold(
+        modifier = modifier
+    ) { _ ->
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize()
+                .systemBarsPadding()
+        ) {
+            Box(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                when (painter.state) {
-                    is AsyncImagePainter.State.Loading -> ShimmeringSkeleton(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .aspectRatio(2 / 3f)
+                FilledIconButton(
+                    onClick = navController::navigateUp,
+                    shape = MaterialTheme.shapes.extraLarge,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                    modifier = Modifier.align(Alignment.TopStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = "Voltar",
                     )
-
-                    is AsyncImagePainter.State.Error -> Box(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .fillMaxSize()
-                    )
-
-                    else -> SubcomposeAsyncImageContent()
                 }
+
+                ComicThumbnail(
+                    url = comic.thumbnailUrl,
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth(.75f)
+                        .run {
+                            sharedTransitionScope.run {
+                                sharedElement(
+                                    state = rememberSharedContentState(ThumbnailElementKey + comic.id),
+                                    animatedVisibilityScope = animatedContentScope,
+                                )
+                            }
+                        }
+                )
             }
 
             Text(
@@ -93,6 +103,24 @@ fun ComicDetailsScreen(
                     }
                 }
             )
+
+            if (comic.description != null) Column(
+                modifier = Modifier.background(
+                    MaterialTheme.colorScheme.surfaceVariant,
+                    MaterialTheme.shapes.medium,
+                ).padding(8.dp)
+            ) {
+                Text(
+                    text = "Descrição",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Text(
+                    text = comic.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         }
     }
 }
@@ -105,9 +133,17 @@ private fun ComicDetailsScreenPreview() {
         SharedTransitionLayout {
             AnimatedContent(true, label = "") {
                 if (it) ComicDetailsScreen(
-                    comic = remember { Comic(0, "Marvel comic", "") },
+                    comic = remember {
+                        Comic(
+                            0,
+                            "Marvel comic",
+                            "Definitely a Marvel comic",
+                            "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg",
+                        )
+                    },
                     animatedContentScope = this,
                     sharedTransitionScope = this@SharedTransitionLayout,
+                    navController = rememberNavController()
                 )
             }
         }

@@ -23,17 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import coil.request.ImageRequest
-import coil.size.Size
 import com.vallem.marvelhq.shared.domain.model.Comic
-import com.vallem.marvelhq.shared.presentation.component.ShimmeringSkeleton
 import com.vallem.marvelhq.shared.presentation.component.shimmeringBrush
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 
@@ -47,22 +39,14 @@ object ComicCard {
         sharedTransitionScope: SharedTransitionScope,
         modifier: Modifier = Modifier,
     ) {
-        val context = LocalContext.current
-
         Surface(
             color = Color.Transparent,
             onClick = onClick,
             modifier = modifier
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(comic.thumbnailUrl)
-                        .crossfade(true)
-                        .size(Size.ORIGINAL)
-                        .build(),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
+                ComicThumbnail(
+                    url = comic.thumbnailUrl,
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)
                         .fillMaxSize()
@@ -74,23 +58,7 @@ object ComicCard {
                                 )
                             }
                         }
-                ) {
-                    when (painter.state) {
-                        is AsyncImagePainter.State.Loading -> ShimmeringSkeleton(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .aspectRatio(2 / 3f)
-                        )
-
-                        is AsyncImagePainter.State.Error -> Box(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .fillMaxSize()
-                        )
-
-                        else -> SubcomposeAsyncImageContent()
-                    }
-                }
+                )
 
                 Text(
                     text = comic.title,
@@ -146,7 +114,7 @@ private fun ComicCardPreview() {
             SharedTransitionLayout {
                 AnimatedContent(true) {
                     if (it) ComicCard(
-                        comic = remember { Comic(0, "Comic title", null) },
+                        comic = remember { Comic(0, "Comic title", null, null) },
                         onClick = {},
                         animatedContentScope = this@AnimatedContent,
                         sharedTransitionScope = this@SharedTransitionLayout,

@@ -13,6 +13,7 @@ data class ComicDto(
     val id: Int?,
     val title: String?,
     val thumbnail: ComicThumbnail?,
+    val description: String?,
 )
 
 @Serializable

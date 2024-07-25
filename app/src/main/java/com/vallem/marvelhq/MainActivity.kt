@@ -33,7 +33,12 @@ class MainActivity : ComponentActivity() {
 
                         composable<Comic> {
                             val comic = it.toRoute<Comic>()
-                            ComicDetailsScreen(comic, this, this@SharedTransitionLayout)
+                            ComicDetailsScreen(
+                                comic = comic,
+                                navController = navController,
+                                animatedContentScope = this,
+                                sharedTransitionScope = this@SharedTransitionLayout,
+                            )
                         }
                     }
                 }
