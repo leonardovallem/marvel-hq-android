@@ -31,6 +31,9 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,7 +81,10 @@ fun ComicsListScreenContent(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(16.dp),
-            modifier = Modifier
+            modifier = Modifier.semantics {
+                testTag = "comicsGrid"
+                set(ItemsPerRowSemanticProperty, columns.toString())
+            }
                 .padding(pv)
                 .fillMaxSize()
         ) {
@@ -146,6 +152,7 @@ fun ComicsListScreenContent(
     }
 }
 
+val ItemsPerRowSemanticProperty = SemanticsPropertyKey<String>("ItemsPerRow")
 private const val ComicScreenDividerFactor = 180
 private const val LoadingComicsCount = 20
 

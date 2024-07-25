@@ -1,13 +1,12 @@
 package com.vallem.marvelhq.shared.domain.repository
 
-import androidx.paging.testing.asSnapshot
-import com.vallem.marvelhq.shared.domain.exception.ComicNotFavoritedError
 import com.vallem.marvelhq.shared.domain.repository.mock.MockFavoriteComicsRepository
 import com.vallem.marvelhq.shared.domain.repository.util.randomComic
+import com.vallem.marvelhq.shared.presentation.pagination.PaginationResult
 import io.kotest.assertions.throwables.shouldNotThrowAny
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import kotlin.test.fail
 
 private const val PageSize = 15
 
@@ -34,16 +33,16 @@ class FavoriteComicsRepositoryTest : StringSpec({
     }
 
     "unfavoriting a not-favorited comic should fail" {
-        shouldThrow<ComicNotFavoritedError> {
-            repository.removeAll()
+        repository.removeAll()
 
-            val comic = randomComic()
-            repository.remove(comic)
-        }
+        val comic = randomComic()
+        repository.remove(comic).isFailure shouldBe true
     }
 
     "should return a page of comics" {
-        val page = repository.loadPage(15).asSnapshot()
-        page.size shouldBe PageSize
+        val page = repository.loadPage(1, 15, 1)
+
+        if (page is PaginationResult.Success) page.data.size shouldBe PageSize
+        else fail()
     }
 })

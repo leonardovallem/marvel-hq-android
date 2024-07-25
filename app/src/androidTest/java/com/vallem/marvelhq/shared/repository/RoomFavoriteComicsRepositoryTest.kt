@@ -4,11 +4,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.vallem.marvelhq.shared.data.repository.RoomFavoriteComicsRepository
 import com.vallem.marvelhq.shared.di.TestModule
-import com.vallem.marvelhq.shared.domain.exception.ComicNotFavoritedError
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.domain.repository.FavoriteComicsRepository
 import io.kotest.assertions.throwables.shouldNotThrowAny
-import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -49,13 +48,11 @@ class RoomFavoriteComicsRepositoryTest : KoinTest {
 
     @Test
     fun unfavoritingNotFavoritedComicShouldFail() = runTest {
-        shouldThrow<ComicNotFavoritedError> {
-            repository.removeAll()
+        repository.removeAll()
 
-            val comic = randomComic()
-            repository.remove(comic)
-        }
+        val comic = randomComic()
+        repository.remove(comic).isFailure shouldBe true
     }
 }
 
-fun randomComic() = Comic(Random.nextInt(), "Comic", null)
+fun randomComic() = Comic(Random.nextInt(), "Comic", null, null)
