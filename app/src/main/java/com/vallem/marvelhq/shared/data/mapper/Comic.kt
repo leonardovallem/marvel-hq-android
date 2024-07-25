@@ -16,7 +16,7 @@ fun ComicDto.toDomain() = run {
     Comic(
         id = id ?: return@run null,
         title = title ?: return@run null,
-        description = description,
+        description = description?.takeUnless { it.isBlank() },
         thumbnailUrl = thumbnail?.run { "$path.$extension" },
     )
 }

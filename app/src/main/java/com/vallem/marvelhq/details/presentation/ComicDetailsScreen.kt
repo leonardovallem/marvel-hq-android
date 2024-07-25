@@ -104,11 +104,24 @@ fun ComicDetailsScreen(
                 }
             )
 
-            if (comic.description != null) Column(
-                modifier = Modifier.background(
-                    MaterialTheme.colorScheme.surfaceVariant,
-                    MaterialTheme.shapes.medium,
-                ).padding(8.dp)
+            if (comic.description == null) Text(
+                text = "Sem descrição",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.shapes.medium,
+                    )
+                    .padding(8.dp)
+            )
+            else Column(
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.shapes.medium,
+                    )
+                    .padding(8.dp)
             ) {
                 Text(
                     text = "Descrição",
