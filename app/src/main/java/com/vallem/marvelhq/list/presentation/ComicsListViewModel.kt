@@ -23,7 +23,8 @@ class ComicsListViewModel(
 
         return when (result) {
             is PaginationResult.Success -> {
-                comics.addAll(result.data)
+                val unique = result.data.filter { it !in comics }
+                comics.addAll(unique)
                 true
             }
 

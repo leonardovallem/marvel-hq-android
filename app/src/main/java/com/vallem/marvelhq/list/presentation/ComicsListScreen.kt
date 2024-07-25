@@ -113,6 +113,7 @@ private fun ComicsListScreenContent(
                     if (comics.size > 0) {
                         items(
                             items = comics,
+                            key = { it.id },
                             contentType = { "COMIC" }
                         ) {
                             ComicCard(
