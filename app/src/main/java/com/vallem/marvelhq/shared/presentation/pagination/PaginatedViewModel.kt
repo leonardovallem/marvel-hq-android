@@ -48,6 +48,7 @@ abstract class PaginatedViewModel(private val initialPage: Int) : ViewModel() {
             refreshState = PaginationState.Refresh.Loading
 
             currentPage = initialPage
+            currentPage++
             refreshState = if (retrieveData(initialPage)) PaginationState.Refresh.NotLoading else PaginationState.Refresh.Error
         }
     }

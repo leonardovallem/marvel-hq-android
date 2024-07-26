@@ -5,11 +5,11 @@ import com.vallem.marvelhq.shared.data.remote.dto.ComicDto
 import com.vallem.marvelhq.shared.domain.model.Comic
 
 fun FavoriteComicEntity.toDomain() = run {
-    Comic(id, title, description, thumbUrl)
+    Comic(id, title, description, thumbUrl, releaseDate)
 }
 
 fun Comic.toFavoriteComicEntity() = run {
-    FavoriteComicEntity(id, title, description, thumbnailUrl)
+    FavoriteComicEntity(id, title, description, thumbnailUrl, releaseDate)
 }
 
 fun ComicDto.toDomain() = run {
@@ -18,5 +18,6 @@ fun ComicDto.toDomain() = run {
         title = title ?: return@run null,
         description = description?.takeUnless { it.isBlank() },
         thumbnailUrl = thumbnail?.run { "$path.$extension" },
+        releaseDate = dates?.find { it.type == "focDate" }?.date
     )
 }

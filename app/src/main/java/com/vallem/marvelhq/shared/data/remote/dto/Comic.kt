@@ -14,7 +14,11 @@ data class ComicDto(
     val title: String?,
     val thumbnail: ComicThumbnail?,
     val description: String?,
+    val dates: List<ComicDates>?
 )
 
 @Serializable
 data class ComicThumbnail(val path: String, val extension: String)
+
+@Serializable
+data class ComicDates(val type: String, val date: String)

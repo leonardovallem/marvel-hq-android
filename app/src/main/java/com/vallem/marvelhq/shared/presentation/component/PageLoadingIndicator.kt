@@ -30,7 +30,7 @@ fun PageLoadingIndicator(modifier: Modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .background(shimmeringBrush(duration = 2000))
+                    .background(shimmeringBrush(targetValue = 300f, duration = 2000))
             )
         }
     }

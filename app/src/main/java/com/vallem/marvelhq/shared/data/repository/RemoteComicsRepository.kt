@@ -1,5 +1,6 @@
 package com.vallem.marvelhq.shared.data.repository
 
+import com.vallem.marvelhq.list.presentation.model.ComicsListFilters
 import com.vallem.marvelhq.shared.data.mapper.toDomain
 import com.vallem.marvelhq.shared.data.remote.ApiRoutes
 import com.vallem.marvelhq.shared.data.remote.dto.ComicsResponseDto
@@ -13,12 +14,13 @@ import kotlinx.coroutines.withContext
 
 class RemoteComicsRepository(private val httpClient: HttpClient) : ComicsRepository {
     override suspend fun loadPage(
+        filters: ComicsListFilters,
         page: Int,
         pageSize: Int,
         initialPage: Int
     ) = withContext(Dispatchers.IO) {
         try {
-            httpClient.get(ApiRoutes.comics(pageSize, offset = page * pageSize))
+            httpClient.get(ApiRoutes.comics(filters, pageSize, offset = page * pageSize))
                 .body<ComicsResponseDto>()
                 .data
                 .results

@@ -38,7 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vallem.marvelhq.list.presentation.component.ComicCard
-import com.vallem.marvelhq.list.presentation.component.ComicsListFilters
+import com.vallem.marvelhq.list.presentation.component.ComicsFilters
+import com.vallem.marvelhq.list.presentation.model.ComicsListFilters
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.presentation.pagination.PaginationState
 import com.vallem.marvelhq.shared.presentation.util.LocalFocusClearer
@@ -48,9 +49,11 @@ import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 @Composable
 fun ComicsListScreenContent(
     comics: SnapshotStateList<Comic>,
+    filters: ComicsListFilters,
     appendState: PaginationState.Append,
     refreshState: PaginationState.Refresh,
     retryPagination: () -> Unit,
+    onFiltersChange: (ComicsListFilters) -> Unit,
     loadNextPage: () -> Unit,
     onComicClick: (Comic) -> Unit,
     animatedContentScope: AnimatedContentScope,
@@ -111,9 +114,12 @@ fun ComicsListScreenContent(
                         span = { GridItemSpan(maxLineSpan) },
                         contentType = { "FILTERS" },
                     ) {
-                        ComicsListFilters(
-                            filters = com.vallem.marvelhq.list.presentation.model.ComicsListFilters(),
-                            onChange = { focusClearer.clear() },
+                        ComicsFilters(
+                            filters = filters,
+                            onChange = {
+                                focusClearer.clear()
+                                onFiltersChange(it)
+                            },
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
                     }
@@ -160,7 +166,7 @@ fun ComicsListScreenContent(
 
                 PaginationState.Refresh.Loading -> {
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        ComicsListFilters.Skeleton()
+                        ComicsFilters.Skeleton()
                     }
 
                     items(
@@ -199,9 +205,11 @@ private fun ComicsListScreenPreview() {
             AnimatedContent(true) {
                 if (it) ComicsListScreenContent(
                     comics = remember { List(10) { mockComic() }.toMutableStateList() },
+                    filters = ComicsListFilters(),
                     appendState = PaginationState.Append.NotLoading,
                     refreshState = PaginationState.Refresh.NotLoading,
                     retryPagination = {},
+                    onFiltersChange = {},
                     loadNextPage = {},
                     onComicClick = {},
                     animatedContentScope = this,
@@ -218,4 +226,5 @@ private fun mockComic() = Comic(
     title = "Official Handbook of the Marvel Universe (2004) #10 (MARVEL KNIGHTS)",
     description = "Official Handbook of the Marvel Universe",
     thumbnailUrl = "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg",
+    releaseDate = null,
 )

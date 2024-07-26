@@ -194,6 +194,7 @@ private fun ComicDetailsScreenPreview() {
                             "Marvel comic",
                             "Definitely a Marvel comic",
                             "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg",
+                            null,
                         )
                     },
                     animatedContentScope = this,

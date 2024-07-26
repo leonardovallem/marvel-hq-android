@@ -80,9 +80,11 @@ class MainActivity : ComponentActivity() {
 
                                 ComicsListScreenContent(
                                     comics = viewModel.comics,
+                                    filters = viewModel.filters,
                                     appendState = viewModel.appendState,
                                     refreshState = viewModel.refreshState,
                                     retryPagination = viewModel::retry,
+                                    onFiltersChange = viewModel::updateFilters,
                                     loadNextPage = viewModel::loadNextPage,
                                     onComicClick = { navController.navigate(it) },
                                     animatedContentScope = this,
@@ -113,10 +115,12 @@ class MainActivity : ComponentActivity() {
 
                                 ComicsListScreenContent(
                                     comics = viewModel.comics,
+                                    filters = viewModel.filters,
                                     appendState = viewModel.appendState,
                                     refreshState = viewModel.refreshState,
                                     retryPagination = viewModel::retry,
                                     loadNextPage = viewModel::loadNextPage,
+                                    onFiltersChange = viewModel::updateFilters,
                                     onComicClick = { navController.navigate(it) },
                                     animatedContentScope = this,
                                     sharedTransitionScope = this@SharedTransitionLayout,

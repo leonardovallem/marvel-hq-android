@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComicsListFilters(
+fun ComicsFilters(
     filters: ComicsListFilters,
     onChange: (ComicsListFilters) -> Unit,
     modifier: Modifier = Modifier,
@@ -57,9 +57,6 @@ fun ComicsListFilters(
     var bottomSheetShown by rememberSaveable { mutableStateOf(false) }
     var searchQuery by rememberSaveable { mutableStateOf(filters.title) }
     var sortOrder by remember { mutableStateOf(filters.order) }
-    val resultingFilters = remember(searchQuery, sortOrder) {
-        ComicsListFilters(searchQuery, sortOrder)
-    }
 
     if (bottomSheetShown) ModalBottomSheet(
         onDismissRequest = { bottomSheetShown = false },
@@ -74,7 +71,7 @@ fun ComicsListFilters(
             onChange = {
                 scope.launch {
                     sortOrder = it
-                    onChange(resultingFilters)
+                    onChange(filters.copy(order = it))
                     sheetState.hide()
                     bottomSheetShown = false
                 }
@@ -104,7 +101,7 @@ fun ComicsListFilters(
                 ) {
                     IconButton(onClick = {
                         searchQuery = ""
-                        if (searchQuery == filters.title) onChange(resultingFilters)
+                        if (filters.title.isNotBlank()) onChange(filters.copy(title = ""))
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
@@ -137,13 +134,13 @@ fun ComicsListFilters(
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { onChange(resultingFilters) }),
+        keyboardActions = KeyboardActions(onSearch = { onChange(filters.copy(title = searchQuery)) }),
         shape = MaterialTheme.shapes.extraLarge,
         modifier = modifier
     )
 }
 
-object ComicsListFilters {
+object ComicsFilters {
     @Composable
     fun Skeleton(modifier: Modifier = Modifier) {
         ShimmeringSkeleton(
@@ -159,7 +156,7 @@ object ComicsListFilters {
 @Composable
 private fun ComicsListFiltersPreview() {
     MarvelHQTheme {
-        ComicsListFilters(ComicsListFilters(), {})
+        ComicsFilters(ComicsListFilters(), {})
     }
 }
 
@@ -167,6 +164,6 @@ private fun ComicsListFiltersPreview() {
 @Composable
 private fun ComicsListFiltersSkeletonPreview() {
     MarvelHQTheme {
-        com.vallem.marvelhq.list.presentation.component.ComicsListFilters.Skeleton()
+        ComicsFilters.Skeleton()
     }
 }

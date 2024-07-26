@@ -8,4 +8,5 @@ data class Comic(
     val title: String,
     val description: String?,
     val thumbnailUrl: String?,
+    val releaseDate: String?,
 )

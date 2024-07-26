@@ -1,5 +1,8 @@
 package com.vallem.marvelhq.shared.data.repository
 
+import com.vallem.marvelhq.list.presentation.model.ComicsListFilters
+import com.vallem.marvelhq.list.presentation.model.ComicsListSorting
+import com.vallem.marvelhq.list.presentation.model.ComicsSortOrder
 import com.vallem.marvelhq.shared.data.local.FavoriteComicsDao
 import com.vallem.marvelhq.shared.data.local.entity.FavoriteComicEntity
 import com.vallem.marvelhq.shared.data.mapper.toDomain
@@ -24,11 +27,11 @@ class RoomFavoriteComicsRepository(private val dao: FavoriteComicsDao) : Favorit
         }
     }
 
-    override suspend fun loadPage(page: Int, size: Int, initialPage: Int) =
+    override suspend fun loadPage(filters: ComicsListFilters, page: Int, size: Int, initialPage: Int) =
         withContext(Dispatchers.IO) {
             try {
                 dao
-                    .retrieveAll(size, (page - initialPage) * size)
+                    .retrieveAll(filters.title, filters.order.sql, size, (page - initialPage) * size)
                     .map(FavoriteComicEntity::toDomain)
                     .let { PaginationResult.Success(it, page == initialPage) }
             } catch (t: Throwable) {
@@ -47,3 +50,9 @@ class RoomFavoriteComicsRepository(private val dao: FavoriteComicsDao) : Favorit
         runCatching { dao.removeAll() }
     }
 }
+
+private val ComicsListSorting.sql
+    get() = when (sortBy) {
+        ComicsSortOrder.Title -> "title"
+        ComicsSortOrder.ReleaseDate -> "release_date"
+    }.let { if (descending) it + "desc" else it }

@@ -10,4 +10,5 @@ data class FavoriteComicEntity(
     @ColumnInfo("title") val title: String,
     @ColumnInfo("description") val description: String?,
     @ColumnInfo("thumb_url") val thumbUrl: String?,
+    @ColumnInfo("release_date") val releaseDate: String?,
 )
