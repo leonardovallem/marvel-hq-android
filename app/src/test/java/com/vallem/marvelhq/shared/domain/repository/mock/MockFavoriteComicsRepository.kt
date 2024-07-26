@@ -1,5 +1,6 @@
 package com.vallem.marvelhq.shared.domain.repository.mock
 
+import com.vallem.marvelhq.list.presentation.model.ComicsListFilters
 import com.vallem.marvelhq.shared.domain.exception.ComicNotFavoritedError
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.domain.repository.FavoriteComicsRepository
@@ -14,9 +15,15 @@ class MockFavoriteComicsRepository : FavoriteComicsRepository {
 
     override suspend fun retrieve(id: Int) = runCatching { favorites.find { it.id == id } }
 
-    override suspend fun loadPage(page: Int, size: Int, initialPage: Int) =
+    override suspend fun loadPage(
+        filters: ComicsListFilters,
+        page: Int,
+        size: Int,
+        initialPage: Int
+    ) =
         if (page == initialPage) PaginationResult.Success(favorites.take(size), true)
         else PaginationResult.Failure(Throwable(), true)
+
 
     override suspend fun remove(comic: Comic): Result<Unit> = runCatching {
         val index = favorites.indexOf(comic)

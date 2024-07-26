@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.espresso.device.filter.RequiresDisplay
 import androidx.test.espresso.device.sizeclass.HeightSizeClass.Companion.HeightSizeClassEnum
 import androidx.test.espresso.device.sizeclass.WidthSizeClass.Companion.WidthSizeClassEnum
+import com.vallem.marvelhq.list.presentation.model.ComicsListFilters
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.presentation.component.ComicsListScreenContent
 import com.vallem.marvelhq.shared.presentation.component.ItemsPerRowSemanticProperty
@@ -25,7 +26,8 @@ class ComicsListScreenTest {
             id = 1689,
             title = "Official Handbook of the Marvel Universe (2004) #10 (MARVEL KNIGHTS)",
             thumbnailUrl = "http://i.annihil.us/u/prod/marvel/i/mg/9/30/4bc64df4105b9.jpg",
-            description = null
+            description = null,
+            releaseDate = null,
         )
 
         val comics = List(100) { mockComic() }.toMutableStateList()
@@ -41,9 +43,11 @@ class ComicsListScreenTest {
                 AnimatedContent(true) {
                     if (it) ComicsListScreenContent(
                         comics = comics,
+                        filters = ComicsListFilters(),
                         appendState = PaginationState.Append.NotLoading,
                         refreshState = PaginationState.Refresh.NotLoading,
                         retryPagination = {},
+                        onFiltersChange = {},
                         loadNextPage = {},
                         onComicClick = {},
                         animatedContentScope = this,
@@ -69,9 +73,11 @@ class ComicsListScreenTest {
                 AnimatedContent(true) {
                     if (it) ComicsListScreenContent(
                         comics = comics,
+                        filters = ComicsListFilters(),
                         appendState = PaginationState.Append.NotLoading,
                         refreshState = PaginationState.Refresh.NotLoading,
                         retryPagination = {},
+                        onFiltersChange = {},
                         loadNextPage = {},
                         onComicClick = {},
                         animatedContentScope = this,

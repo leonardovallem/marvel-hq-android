@@ -1,5 +1,6 @@
 package com.vallem.marvelhq.shared.domain.repository
 
+import com.vallem.marvelhq.list.presentation.model.ComicsListFilters
 import com.vallem.marvelhq.shared.domain.repository.mock.MockFavoriteComicsRepository
 import com.vallem.marvelhq.shared.domain.repository.util.randomComic
 import com.vallem.marvelhq.shared.presentation.pagination.PaginationResult
@@ -40,7 +41,7 @@ class FavoriteComicsRepositoryTest : StringSpec({
     }
 
     "should return a page of comics" {
-        val page = repository.loadPage(1, 15, 1)
+        val page = repository.loadPage(ComicsListFilters(), 1, 15, 1)
 
         if (page is PaginationResult.Success) page.data.size shouldBe PageSize
         else fail()
