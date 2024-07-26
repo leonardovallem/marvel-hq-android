@@ -79,6 +79,7 @@ class MainActivity : ComponentActivity() {
                                     koinViewModel<ComicsListViewModel>(key = "COMICS_LIST_VIEWMODEL")
 
                                 ComicsListScreenContent(
+                                    title = "HQs",
                                     comics = viewModel.comics,
                                     filters = viewModel.filters,
                                     appendState = viewModel.appendState,
@@ -114,6 +115,7 @@ class MainActivity : ComponentActivity() {
                                     koinViewModel<FavoriteComicsViewModel>(key = "FAVORITE_COMICS_VIEWMODEL")
 
                                 ComicsListScreenContent(
+                                    title = "Favoritos",
                                     comics = viewModel.comics,
                                     filters = viewModel.filters,
                                     appendState = viewModel.appendState,

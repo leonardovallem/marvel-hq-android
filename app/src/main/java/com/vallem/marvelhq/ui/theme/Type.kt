@@ -1,34 +1,31 @@
 package com.vallem.marvelhq.ui.theme
 
-import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import com.vallem.marvelhq.R
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
+private val BebasNeue = FontFamily(Font(R.font.bebas_neue))
+private val Comfortaa = FontFamily(Font(R.font.comfortaa_medium))
+
+val Typography
+    @Composable get() = MaterialTheme.typography.run {
+        copy(
+            displayLarge = displayLarge.copy(fontFamily = BebasNeue),
+            displayMedium = displayMedium.copy(fontFamily = BebasNeue),
+            displaySmall = displaySmall.copy(fontFamily = BebasNeue),
+            headlineLarge = headlineLarge.copy(fontFamily = Comfortaa),
+            headlineMedium = headlineMedium.copy(fontFamily = Comfortaa),
+            headlineSmall = headlineSmall.copy(fontFamily = Comfortaa),
+            titleLarge = titleLarge.copy(fontFamily = Comfortaa),
+            titleMedium = titleMedium.copy(fontFamily = Comfortaa),
+            titleSmall = titleSmall.copy(fontFamily = Comfortaa),
+            bodyLarge = bodyLarge.copy(fontFamily = Comfortaa),
+            bodyMedium = bodyMedium.copy(fontFamily = Comfortaa),
+            bodySmall = bodySmall.copy(fontFamily = Comfortaa),
+            labelLarge = labelLarge.copy(fontFamily = Comfortaa),
+            labelMedium = labelMedium.copy(fontFamily = Comfortaa),
+            labelSmall = labelSmall.copy(fontFamily = Comfortaa),
+        )
+    }

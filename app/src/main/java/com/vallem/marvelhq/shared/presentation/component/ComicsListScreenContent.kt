@@ -48,6 +48,7 @@ import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ComicsListScreenContent(
+    title: String,
     comics: SnapshotStateList<Comic>,
     filters: ComicsListFilters,
     appendState: PaginationState.Append,
@@ -100,8 +101,8 @@ fun ComicsListScreenContent(
                 contentType = { "TITLE" },
             ) {
                 Text(
-                    text = "HQs",
-                    style = MaterialTheme.typography.displaySmall,
+                    text = title,
+                    style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
@@ -204,6 +205,7 @@ private fun ComicsListScreenPreview() {
         SharedTransitionLayout {
             AnimatedContent(true) {
                 if (it) ComicsListScreenContent(
+                    title = "HQs",
                     comics = remember { List(10) { mockComic() }.toMutableStateList() },
                     filters = ComicsListFilters(),
                     appendState = PaginationState.Append.NotLoading,
