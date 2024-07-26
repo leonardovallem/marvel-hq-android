@@ -42,11 +42,13 @@ class ComicsListScreenTest {
             SharedTransitionLayout {
                 AnimatedContent(true) {
                     if (it) ComicsListScreenContent(
+                        title = "",
                         comics = comics,
                         filters = ComicsListFilters(),
                         appendState = PaginationState.Append.NotLoading,
                         refreshState = PaginationState.Refresh.NotLoading,
                         retryPagination = {},
+                        refresh = {},
                         onFiltersChange = {},
                         loadNextPage = {},
                         onComicClick = {},
@@ -72,11 +74,13 @@ class ComicsListScreenTest {
             SharedTransitionLayout {
                 AnimatedContent(true) {
                     if (it) ComicsListScreenContent(
+                        title = "",
                         comics = comics,
                         filters = ComicsListFilters(),
                         appendState = PaginationState.Append.NotLoading,
                         refreshState = PaginationState.Refresh.NotLoading,
                         retryPagination = {},
+                        refresh = {},
                         onFiltersChange = {},
                         loadNextPage = {},
                         onComicClick = {},
