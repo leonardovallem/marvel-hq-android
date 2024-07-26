@@ -7,15 +7,21 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.WarningAmber
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -54,6 +60,7 @@ fun ComicsListScreenContent(
     appendState: PaginationState.Append,
     refreshState: PaginationState.Refresh,
     retryPagination: () -> Unit,
+    refresh: () -> Unit,
     onFiltersChange: (ComicsListFilters) -> Unit,
     loadNextPage: () -> Unit,
     onComicClick: (Comic) -> Unit,
@@ -162,7 +169,29 @@ fun ComicsListScreenContent(
                 }
 
                 PaginationState.Refresh.Error -> item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(text = "Erro")
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.WarningAmber,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(64.dp)
+                        )
+
+                        Text(
+                            text = "Ops... Aconteceu algum erro por aqui.",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
+
+                        FilledTonalButton(onClick = refresh) {
+                            Text(text = "Tentar novamente")
+                        }
+                    }
                 }
 
                 PaginationState.Refresh.Loading -> {
@@ -211,6 +240,7 @@ private fun ComicsListScreenPreview() {
                     appendState = PaginationState.Append.NotLoading,
                     refreshState = PaginationState.Refresh.NotLoading,
                     retryPagination = {},
+                    refresh = {},
                     onFiltersChange = {},
                     loadNextPage = {},
                     onComicClick = {},
