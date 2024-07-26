@@ -41,6 +41,7 @@ import com.vallem.marvelhq.list.presentation.component.ComicCard
 import com.vallem.marvelhq.list.presentation.component.ComicsListFilters
 import com.vallem.marvelhq.shared.domain.model.Comic
 import com.vallem.marvelhq.shared.presentation.pagination.PaginationState
+import com.vallem.marvelhq.shared.presentation.util.LocalFocusClearer
 import com.vallem.marvelhq.ui.theme.MarvelHQTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -56,6 +57,7 @@ fun ComicsListScreenContent(
     sharedTransitionScope: SharedTransitionScope,
 ) {
     val configuration = LocalConfiguration.current
+    val focusClearer = LocalFocusClearer.current
     val columns = configuration.screenWidthDp / ComicScreenDividerFactor
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -111,6 +113,7 @@ fun ComicsListScreenContent(
                     ) {
                         ComicsListFilters(
                             filters = com.vallem.marvelhq.list.presentation.model.ComicsListFilters(),
+                            onChange = { focusClearer.clear() },
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
                     }
